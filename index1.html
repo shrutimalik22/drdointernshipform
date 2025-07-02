@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRDO Internship Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f4f4f9;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--light);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .error {
+            color: var(--accent);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        button {
+            background: var(--secondary);
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            border: none;
+            border-radius: var(--border-radius);
+            width: 100%;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            display: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="irde-drdo-logo.png" alt="DRDO Logo">
+        </div>
+        <h1>DRDO Internship Application</h1>
+        <form id="applicationForm">
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> Name</label>
+                <input type="text" id="name" required>
+                <div class="error" id="nameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="age"><i class="fas fa-calendar-alt"></i> Age (less than 28)</label>
+                <input type="number" id="age" required>
+                <div class="error" id="ageError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                <select id="gender" required>
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="error" id="genderError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="course"><i class="fas fa-book"></i> Course</label>
+                <select id="course" required>
+                    <option value="">Select your course</option>
+                    <option value="BTech">BTech</option>
+                    <option value="BCA">BCA</option>
+                    <option value="MCA">MCA</option>
+                    <option value="MTech">MTech</option>
+                    <option value="BSc">BSc</option>
+                    <option value="MSc">MSc</option>
+                </select>
+                <div class="error" id="courseError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="cgpa"><i class="fas fa-chart-line"></i> CGPA (greater than 7.5)</label>
+                <input type="number" step="0.01" id="cgpa" required>
+                <div class="error" id="cgpaError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="email" required>
+                <div class="error" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+                <input type="tel" id="phone" pattern="[0-9]{10}" required>
+                <div class="error" id="phoneError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="resume"><i class="fas fa-file-upload"></i> Upload Resume (PDF)</label>
+                <input type="file" id="resume" accept="application/pdf" required>
+                <div class="error" id="resumeError"></div>
+            </div>
+
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const form = document.getElementById('applicationForm');
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+
+            const name = document.getElementById('name').value.trim();
+            const age = parseFloat(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const course = document.getElementById('course').value;
+            const cgpa = parseFloat(document.getElementById('cgpa').value);
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const resume = document.getElementById('resume').files[0];
+
+            let isValid = true;
+
+            if (!/^[a-zA-Z\s]+$/.test(name)) {
+                document.getElementById('nameError').textContent = 'Enter a valid name';
+                isValid = false;
+            }
+
+            if (isNaN(age) || age < 1 || age >= 28) {
+                document.getElementById('ageError').textContent = 'Age must be less than 28';
+                isValid = false;
+            }
+
+            if (!gender) {
+                document.getElementById('genderError').textContent = 'Gender is required';
+                isValid = false;
+            }
+
+            if (!course) {
+                document.getElementById('courseError').textContent = 'Course is required';
+                isValid = false;
+            }
+
+            if (isNaN(cgpa) || cgpa <= 7.5 || cgpa > 10) {
+                document.getElementById('cgpaError').textContent = 'CGPA must be between 7.5 and 10';
+                isValid = false;
+            }
+
+            if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+                document.getElementById('emailError').textContent = 'Invalid email format';
+                isValid = false;
+            }
+
+            if (!/^[0-9]{10}$/.test(phone)) {
+                document.getElementById('phoneError').textContent = 'Enter a 10-digit phone number';
+                isValid = false;
+            }
+
+            if (!resume || resume.type !== 'application/pdf') {
+                document.getElementById('resumeError').textContent = 'Upload a valid PDF file';
+                isValid = false;
+            }
+
+            if (isValid) {
+                showToast(`Thank you, ${name}! Your application has been submitted.`);
+                form.reset();
+            }
+        });
+    </script>
+</body>
+
+</html>
